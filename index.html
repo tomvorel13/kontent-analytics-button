@@ -3,11 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>Color Picker</title>
-    <!-- libs -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-    <script src="color-picker.min.js"></script>
-    <link rel="stylesheet" href="color-picker.min.css" />
-
     <!-- Kentico Custom elements API-->
     <script src="https://app.kontent.ai/js-api/custom-element/v1/custom-element.min.js"></script>
 
@@ -15,20 +10,6 @@
     <style>
       body {
         margin: 0;
-      }
-
-      div.color-picker-box {
-        width: 100%;
-        padding: 30px 0 30px 0;
-        text-align: center;
-        z-index: 1;
-      }
-
-      .color-picker.static {
-        display: inline-block !important;
-        position: static !important;
-        top: 0 !important;
-        left: 0 !important;
       }
 
       .disabled_overlay {
@@ -45,10 +26,8 @@
   </head>
   <body>
     <!-- Custom element HTML -->
-    <div class="disabled_overlay"></div>
-    <div class="color-picker-box">
-      <section id="color-picker"></section>
-    </div>
+    <button id="open-preview">Checkout new preview build</button>
+
 
     <!-- Custom element code -->
     <script>
@@ -63,24 +42,14 @@
         }
       }
 
-      function setupColorPicker(hexColorValue) {
-        const container = document.querySelector("#color-picker");
-        const picker = new CP(container, false, container);
-        picker.self.classList.add("static");
-        if (!!hexColorValue) {
-          picker.set(hexColorValue);
-          container.parentNode.style.backgroundColor = hexColorValue;
+      function setupButton(element, context) {
+        const button = document.getElementById("open-preview");
+        button.onclick = (ev) => {
+          CustomElement.getElementValue('url_slug', (value) => {
+            const url = `${element.config.domain}/blog/${value}`;
+            window.open(url, '_blank');
+          });
         }
-
-        picker.on("change", function(color) {
-          container.parentNode.style.backgroundColor = "#" + color;
-          if (!isDisabled) {
-            // Send updated color to Kentico
-            CustomElement.setValue("#" + color);
-          }
-        });
-
-        picker.enter();
       }
 
       function updateSize() {
@@ -94,7 +63,7 @@
           CustomElement.init((element, _context) => {
             // Setup with initial value and disabled state
             updateDisabled(element.disabled);
-            setupColorPicker(element.value);
+            setupButton(element, context);
             updateSize();
           });
 
