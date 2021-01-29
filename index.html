@@ -1,83 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Color Picker</title>
-    <!-- Kentico Custom elements API-->
-    <script src="https://app.kontent.ai/js-api/custom-element/v1/custom-element.min.js"></script>
 
-    <!-- Custom elements styles -->
-    <style>
-      body {
-        margin: 0;
+<head>
+  <meta charset="UTF-8" />
+  <title>Color Picker</title>
+  <!-- Kentico Custom elements API-->
+  <script src="https://app.kontent.ai/js-api/custom-element/v1/custom-element.min.js"></script>
+
+  <!-- Custom elements styles -->
+  <style>
+    body {
+      margin: 0;
+    }
+
+    .disabled_overlay {
+      position: fixed;
+      z-index: 10;
+      cursor: not-allowed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Custom element HTML -->
+  <button id="open-preview">Checkout new preview build</button>
+
+
+  <!-- Custom element code -->
+  <script>
+    var isDisabled = false;
+
+    function updateDisabled(disabled) {
+      isDisabled = disabled;
+      if (disabled) {
+        document.querySelector(".disabled_overlay")[0].button.setAttribute("style", "{display:none;}");
+      } else {
+        document.querySelector(".disabled_overlay")[0].button.removeAttribute("style"); 
       }
+    }
 
-      .disabled_overlay {
-        position: fixed;
-        z-index: 10;
-        cursor: not-allowed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
+    function setupButton(element, context) {
+      const button = document.getElementById("open-preview");
+      button.onclick = (ev) => {
+        CustomElement.getElementValue('url_slug', (value) => {
+          const url = `${element.config.domain}/blog/${value}`;
+          window.open(url, '_blank');
+        });
       }
-    </style>
-  </head>
-  <body>
-    <!-- Custom element HTML -->
-    <button id="open-preview">Checkout new preview build</button>
+    }
 
+    function updateSize() {
+      // Update the custom element height in the Kentico UI.
+      const height = Math.ceil(document.getElementsByTagName("html")[0].scrollHeight);
+      CustomElement.setHeight(height);
+    }
 
-    <!-- Custom element code -->
-    <script>
-      var isDisabled = false;
+    function initCustomElement() {
+      try {
+        CustomElement.init((element, _context) => {
+          // Setup with initial value and disabled state
+          updateDisabled(element.disabled);
+          setupButton(element, context);
+          updateSize();
+        });
 
-      function updateDisabled(disabled) {
-        isDisabled = disabled;
-        if (disabled) {
-          $(".disabled_overlay").show();
-        } else {
-          $(".disabled_overlay").hide();
-        }
+        // React on disabled changed (e.g. when publishing the item)
+        CustomElement.onDisabledChanged(updateDisabled);
+      } catch (err) {
+        // Initialization with Kentico Custom element API failed (page displayed outside of the Kentico UI)
+        console.error(err);
+        setupButton();
+        updateDisabled(true);
       }
+    }
 
-      function setupButton(element, context) {
-        const button = document.getElementById("open-preview");
-        button.onclick = (ev) => {
-          CustomElement.getElementValue('url_slug', (value) => {
-            const url = `${element.config.domain}/blog/${value}`;
-            window.open(url, '_blank');
-          });
-        }
-      }
+    initCustomElement();
+  </script>
+</body>
 
-      function updateSize() {
-        // Update the custom element height in the Kentico UI.
-        const height = Math.ceil($("html").height());
-        CustomElement.setHeight(height);
-      }
-
-      function initCustomElement() {
-        try {
-          CustomElement.init((element, _context) => {
-            // Setup with initial value and disabled state
-            updateDisabled(element.disabled);
-            setupButton(element, context);
-            updateSize();
-          });
-
-          // React on disabled changed (e.g. when publishing the item)
-          CustomElement.onDisabledChanged(updateDisabled);
-        } catch (err) {
-          // Initialization with Kentico Custom element API failed (page displayed outside of the Kentico UI)
-          console.error(err);
-          setupButton();
-          updateDisabled(true);
-        }
-      }
-
-      initCustomElement();
-    </script>
-  </body>
 </html>
