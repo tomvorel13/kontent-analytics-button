@@ -63,7 +63,7 @@
 
     function initCustomElement() {
       try {
-        CustomElement.init((element, _context) => {
+        CustomElement.init((element, context) => {
           // Setup with initial value and disabled state
           updateDisabled(element.disabled);
           setupButton(element, context);
