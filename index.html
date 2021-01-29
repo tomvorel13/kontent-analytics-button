@@ -40,9 +40,9 @@
     function updateDisabled(disabled) {
       isDisabled = disabled;
       if (disabled) {
-        document.querySelector(".disabled_overlay")[0].button.setAttribute("style", "{display:none;}");
+        document.querySelector(".disabled_overlay")[0].setAttribute("style", "{display:none;}");
       } else {
-        document.querySelector(".disabled_overlay")[0].button.removeAttribute("style"); 
+        document.querySelector(".disabled_overlay")[0].removeAttribute("style"); 
       }
     }
 
