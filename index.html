@@ -23,13 +23,24 @@
       height: 100%;
       opacity: 0;
     }
+
+    #ga-btn {
+      font-size: 18px;
+      padding: 10px;
+      outline: none;
+      background: #e75810;
+      border-radius: 10px;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
   <!-- Custom element HTML -->
 
-  <button id="open-preview">Checkout new preview build</button>
+  <button id="ga-btn">View in Google Analytics</button>
 
 
   <!-- Custom element code -->
@@ -46,10 +57,10 @@
     }
 
     function setupButton(element, context) {
-      const button = document.getElementById("open-preview");
+      const button = document.getElementById("ga-btn");
       button.onclick = (ev) => {
-        CustomElement.getElementValue('url_slug', (value) => {
-          const url = `${element.config.domain}/blog/${value}`;
+        CustomElement.getElementValue('ga_url', (value) => {
+          const url = `${element.config.domain}${value}`;
           window.open(url, '_blank');
         });
       }
