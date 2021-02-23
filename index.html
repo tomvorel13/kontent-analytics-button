@@ -59,7 +59,7 @@
     function setupButton(element, context) {
       const button = document.getElementById("ga-btn");
       button.onclick = (ev) => {
-        CustomElement.getElementValue('ga_url', (value) => {
+        CustomElement.getElementValue('url_slug', (value) => {
           const url = `${element.config.domain}${value}`;
           window.open(url, '_blank');
         });
